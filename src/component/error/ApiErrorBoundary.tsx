@@ -8,6 +8,7 @@ type State = {
   shouldHandleError: boolean;
   shouldRethrow: boolean;
   error?: Error;
+  render?: () => React.ReactNode;
 };
 
 export class ApiErrorBoundary extends React.Component<Props, State> {
@@ -19,17 +20,10 @@ export class ApiErrorBoundary extends React.Component<Props, State> {
     };
   }
   static getDerivedStateFromError(error: Error): State {
-    console.log(error);
-    if (error) {
-      return {
-        shouldHandleError: false,
-        shouldRethrow: true,
-        error,
-      };
-    }
     return {
       shouldHandleError: true,
       shouldRethrow: false,
+      error,
     };
   }
 
@@ -37,9 +31,9 @@ export class ApiErrorBoundary extends React.Component<Props, State> {
     if (this.state.shouldRethrow) {
       throw this.state.error;
     }
-    if (this.state.shouldHandleError) {
+    if (!this.state.shouldHandleError) {
       return this.props.children;
     }
-    return <div>error</div>;
+    return <>Error...</>;
   }
 }
