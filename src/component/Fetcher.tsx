@@ -8,7 +8,10 @@ type Props = {
 };
 
 function Fetcher({ queryKeys, children }: Props) {
-  const { isLoading } = useQueryFn<BannerData>(queryKeys);
+  const { isLoading } = useQueryFn<BannerData>(queryKeys, {
+    useErrorBoundary: true,
+  });
+
   if (isLoading) return <div>loading...</div>;
 
   return <div>{children}</div>;

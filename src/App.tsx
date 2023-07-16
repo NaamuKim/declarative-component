@@ -4,11 +4,14 @@ import { useRef } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Banner from '@/component/screen/Banner';
 import { BANNER_API_URL } from '@/api/queryKeys/banner';
+import { ApiErrorBoundary } from '@/component/error/ApiErrorBoundary';
+import { ApiError } from '@/class/ApiError';
 
 function queryErrorHandler(error: unknown): void {
   const title =
     error instanceof Error ? error.message : 'error connecting to server';
-  alert(title);
+  const code = error instanceof ApiError ? error.code : 500;
+  throw new ApiError(title, code);
 }
 
 export function generateQueryClient(): QueryClient {
@@ -18,6 +21,7 @@ export function generateQueryClient(): QueryClient {
         onError: queryErrorHandler,
         staleTime: 1000 * 60 * 10, // 10분
         cacheTime: 1000 * 60 * 15, // 15분 (staleTime 보다 길게)
+        retry: false,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
@@ -40,9 +44,11 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <Fetcher queryKeys={[BANNER_API_URL]}>
-          <Banner />
-        </Fetcher>
+        <ApiErrorBoundary>
+          <Fetcher queryKeys={[BANNER_API_URL]}>
+            <Banner />
+          </Fetcher>
+        </ApiErrorBoundary>
       </QueryClientProvider>
     </>
   );

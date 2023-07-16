@@ -4,7 +4,6 @@ import { BANNER_API_URL } from '@/api/queryKeys/banner';
 
 const Banner = () => {
   const { data } = useQueryFn<BannerData>([BANNER_API_URL]);
-  console.log(data);
   return (
     <div>
       {(data as BannerData).map((item) => (

@@ -1,20 +1,21 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.tsx';
+import './index.css';
 
-import("@/__msw__/browser")
-    .then(async ({ worker }) => {
-        await worker.start({
-            onUnhandledRequest: "bypass",
-        });
-    })
-    .catch((err) => {
-        console.error(err);
+import('@/__msw__/browser')
+  .then(async ({ worker }) => {
+    await worker.start({
+      onUnhandledRequest: 'bypass',
     });
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+  })
+  .catch((err) => {
+    console.error(err);
+  })
+  .finally(() => {
+    ReactDOM.createRoot(document.getElementById('root')!).render(
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    );
+  });
